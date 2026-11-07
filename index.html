@@ -3,856 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Все породы лошадей | Энциклопедия и каталог</title>
-    <!-- Tailwind CSS -->
+    <title>Каталог пород лошадей</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        amber: {
-                            850: '#5c2b09',
-                            900: '#431c07',
-                        },
-                        sand: {
-                            50: '#faf8f5',
-                            100: '#f4efe6',
-                            200: '#e6d8c3',
-                            800: '#3d3429',
-                            900: '#262018',
-                        },
-                        gold: {
-                            400: '#fbbf24',
-                            500: '#d97706',
-                            600: '#b45309',
-                        }
-                    },
-                    fontFamily: {
-                        serif: ['Cinzel', 'Georgia', 'serif'],
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f4efe6;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #b45309;
-            border-radius: 4px;
-        }
-        .modal-active {
-            overflow: hidden;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(12px);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+        h1, h2, h3, .serif { font-family: 'Cormorant Garamond', serif; }
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-sand-50 text-sand-900 min-h-screen flex flex-col font-sans transition-colors duration-300">
+<body class="bg-stone-950 text-stone-100 min-h-screen flex flex-col selection:bg-amber-700 selection:text-amber-100">
 
-    <!-- Header Section -->
-    <header class="bg-gradient-to-r from-amber-900 via-amber-850 to-amber-900 text-white shadow-xl sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <!-- Title & Brand -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 rounded-full bg-gold-500/20 border-2 border-gold-400 flex items-center justify-center text-gold-400 text-2xl shadow-inner">
-                        <i class="fa-solid fa-horse-head"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl sm:text-3xl font-serif font-bold tracking-wide text-amber-50">
-                            Все породы лошадей
-                        </h1>
-                        <p class="text-xs sm:text-sm text-gold-400/90 tracking-wider uppercase font-medium">
-                            Иллюстрированный справочник
-                        </p>
-                    </div>
+    <!-- Header -->
+    <header class="bg-stone-900 border-b border-amber-900/40 sticky top-0 z-30 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-600 to-amber-900 flex items-center justify-center shadow-lg border border-amber-500/30">
+                    <i class="fa-solid fa-horse-head text-amber-200 text-xl"></i>
                 </div>
-
-                <!-- Action Controls: Search & Add Button -->
-                <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-                    <button onclick="openAddBreedModal()" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-amber-950 font-bold rounded-full text-sm shadow-lg flex items-center justify-center gap-2 transition transform hover:scale-105">
-                        <i class="fa-solid fa-plus-circle text-base"></i> Добавить породу
-                    </button>
-                    
-                    <div class="relative w-full sm:w-64">
-                        <input 
-                            type="text" 
-                            id="searchInput"
-                            placeholder="Поиск породы, страны..." 
-                            class="w-full pl-10 pr-4 py-2.5 rounded-full bg-amber-950/60 border border-gold-500/30 text-white placeholder-amber-200/50 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition text-sm"
-                            oninput="filterBreeds()"
-                        >
-                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gold-400/70 text-sm"></i>
-                    </div>
+                <div>
+                    <h1 class="text-3xl font-bold tracking-wide text-amber-100">Породы Лошадей</h1>
+                    <p class="text-xs text-amber-400/80 font-medium">Иллюстрированный электронный каталог</p>
                 </div>
             </div>
-
-            <!-- Filters & Sorting Controls -->
-            <div class="mt-6 pt-4 border-t border-amber-800/60 flex flex-wrap items-center justify-between gap-4">
-                <!-- Category Filters -->
-                <div class="flex flex-wrap items-center gap-2" id="categoryFilters">
-                    <button onclick="setCategory('all')" class="cat-btn active border border-gold-400/50 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition bg-gold-500 text-amber-950 shadow-md" data-category="all">
-                        Все породы (<span id="count-all">0</span>)
-                    </button>
-                    <button onclick="setCategory('Верховая')" class="cat-btn border border-gold-500/30 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium hover:bg-amber-800/50 transition text-amber-100" data-category="Верховая">
-                        <i class="fa-solid fa-person-biking mr-1 text-xs"></i> Верховые
-                    </button>
-                    <button onclick="setCategory('Упряжная')" class="cat-btn border border-gold-500/30 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium hover:bg-amber-800/50 transition text-amber-100" data-category="Упряжная">
-                        <i class="fa-solid fa-truck-moving mr-1 text-xs"></i> Упряжные
-                    </button>
-                    <button onclick="setCategory('Универсал')" class="cat-btn border border-gold-500/30 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium hover:bg-amber-800/50 transition text-amber-100" data-category="Универсал">
-                        <i class="fa-solid fa-star mr-1 text-xs"></i> Универсальные
-                    </button>
-                    <button onclick="setCategory('Пони')" class="cat-btn border border-gold-500/30 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium hover:bg-amber-800/50 transition text-amber-100" data-category="Пони">
-                        <i class="fa-solid fa-feather mr-1 text-xs"></i> Пони
-                    </button>
-                </div>
-
-                <!-- Sort Control -->
-                <div class="flex items-center space-x-2 text-xs sm:text-sm text-amber-200/80">
-                    <label for="sortSelect" class="whitespace-nowrap"><i class="fa-solid fa-arrow-down-a-z mr-1"></i> Сортировка:</label>
-                    <select id="sortSelect" onchange="filterBreeds()" class="bg-amber-950/80 border border-gold-500/30 rounded-lg text-white px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-gold-400 text-xs sm:text-sm">
-                        <option value="name-asc">По названию (А-Я)</option>
-                        <option value="name-desc">По названию (Я-А)</option>
-                        <option value="height-asc">По росту (сначала низкие)</option>
-                        <option value="height-desc">По росту (сначала высокие)</option>
-                    </select>
-                </div>
+            
+            <div class="relative w-full sm:w-80">
+                <input type="text" id="searchInput" placeholder="Поиск по названию, масти, стране..." 
+                    class="w-full pl-10 pr-4 py-2.5 bg-stone-950 border border-stone-800 rounded-xl text-amber-100 placeholder-stone-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 text-sm transition">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-stone-500 text-sm"></i>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Grid -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Results Counter / Reset Toolbar -->
-        <div class="mb-6 flex flex-wrap justify-between items-center text-sm text-sand-800 border-b border-sand-200 pb-3 gap-2">
-            <div>
-                Найдено пород: <span id="visibleCount" class="font-bold text-amber-800">0</span>
-            </div>
-            <div class="flex items-center gap-4 text-xs">
-                <button onclick="resetToDefaultBreeds()" class="text-amber-800 hover:text-amber-950 underline flex items-center gap-1">
-                    <i class="fa-solid fa-rotate-left"></i> Сбросить к исходным
-                </button>
-                <span class="text-gray-500 hidden sm:inline">Нажмите на карту для подробностей</span>
-            </div>
+    <!-- Navigation & Filters -->
+    <div class="bg-stone-900/80 border-b border-stone-800 backdrop-blur-md sticky top-[77px] z-20">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap gap-2 justify-center" id="categoryFilters">
+            <button onclick="filterCategory('all')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition bg-amber-600 text-stone-950 shadow-md">Все породы</button>
+            <button onclick="filterCategory('верховая')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition bg-stone-800 text-stone-300 hover:bg-stone-700 hover:text-amber-300">Верховые</button>
+            <button onclick="filterCategory('упряжная')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition bg-stone-800 text-stone-300 hover:bg-stone-700 hover:text-amber-300">Упряжные</button>
+            <button onclick="filterCategory('универсал')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition bg-stone-800 text-stone-300 hover:bg-stone-700 hover:text-amber-300">Универсальные</button>
+            <button onclick="filterCategory('пони')" class="cat-btn px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition bg-stone-800 text-stone-300 hover:bg-stone-700 hover:text-amber-300">Пони</button>
         </div>
+    </div>
 
-        <!-- Hidden input for replacing image on existing card -->
-        <input type="file" id="cardImageInput" accept="image/*" class="hidden" onchange="handleCardImageUpload(event)">
-
-        <!-- Breed Cards Grid -->
-        <div id="breedGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- Cards generated dynamically via JavaScript -->
-        </div>
-
-        <!-- Empty State -->
-        <div id="noResults" class="hidden text-center py-16 bg-white rounded-2xl shadow-sm border border-sand-200">
-            <div class="text-gold-500 text-5xl mb-4">
-                <i class="fa-solid fa-horse"></i>
-            </div>
-            <h3 class="text-xl font-bold text-sand-900 mb-2">Породы не найдены</h3>
-            <p class="text-gray-600 max-w-md mx-auto text-sm">
-                Попробуйте изменить параметры поиска или сбросить фильтры.
-            </p>
-            <button onclick="resetFilters()" class="mt-4 px-5 py-2 bg-amber-800 text-white rounded-full text-sm hover:bg-amber-900 transition">
-                Сбросить фильтры
-            </button>
+    <!-- Main Grid -->
+    <main class="max-w-7xl mx-auto px-4 py-10 flex-1 w-full">
+        <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div id="notFound" class="hidden text-center py-20">
+            <i class="fa-solid fa-compass text-5xl text-stone-700 mb-4"></i>
+            <p class="text-stone-400 text-lg">Породы по вашему запросу не найдены</p>
         </div>
     </main>
 
+    <!-- Modal Window -->
+    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-stone-900 border border-amber-900/40 rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl text-stone-100 relative max-h-[90vh] flex flex-col">
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-9 h-9 bg-stone-950/70 hover:bg-amber-600 text-stone-300 hover:text-stone-950 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            <div id="modalContent" class="overflow-y-auto"></div>
+        </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="bg-sand-900 text-sand-200 border-t border-amber-900/40 py-8 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div>
-                <p class="font-serif text-lg font-bold text-gold-400">Все породы лошадей</p>
-                <p class="text-xs text-sand-400">Полный интерактивный каталог красивейших грациозных животных.</p>
-            </div>
-            <div class="text-xs text-sand-400 text-center sm:text-right">
-                <p>Готово к публикации на GitHub Pages</p>
-                <p class="mt-1">© Энциклопедия коневодства</p>
-            </div>
+    <footer class="bg-stone-900 border-t border-stone-800 py-6 text-center text-xs text-stone-500">
+        <div class="max-w-7xl mx-auto px-4">
+            Каталог пород лошадей © GitHub Pages
         </div>
     </footer>
 
-    <!-- Modal for Detailed Info -->
-    <div id="detailModal" class="fixed inset-0 z-50 hidden bg-sand-900/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto transform transition-all relative border border-amber-900/10 flex flex-col md:flex-row">
-            
-            <button onclick="closeModal()" class="absolute top-3 right-3 z-10 w-9 h-9 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition focus:outline-none">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <!-- Modal Image Side -->
-            <div class="md:w-1/2 relative min-h-[260px] md:min-h-full bg-sand-100">
-                <img id="modalImage" src="" alt="" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent md:hidden"></div>
-                <div class="absolute bottom-3 left-3 right-3 md:hidden text-white">
-                    <span id="modalCategoryBadgeMobile" class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gold-500 text-amber-950 mb-1"></span>
-                    <h2 id="modalNameMobile" class="text-2xl font-serif font-bold"></h2>
-                </div>
-            </div>
-
-            <!-- Modal Content Side -->
-            <div class="md:w-1/2 p-6 flex flex-col justify-between">
-                <div>
-                    <!-- Desktop Title Header -->
-                    <div class="hidden md:block mb-4">
-                        <div class="flex items-center justify-between mb-1">
-                            <span id="modalCategoryBadge" class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-900"></span>
-                            <span id="modalOrigin" class="text-xs text-gray-500 font-medium"><i class="fa-solid fa-location-dot mr-1 text-gold-600"></i><span id="modalOriginText"></span></span>
-                        </div>
-                        <h2 id="modalName" class="text-3xl font-serif font-bold text-sand-900"></h2>
-                        <p id="modalAltName" class="text-sm text-gray-500 italic"></p>
-                    </div>
-
-                    <!-- Quick Specs Table -->
-                    <div class="space-y-3 bg-sand-50 p-4 rounded-xl border border-sand-200 mb-5 text-sm">
-                        <div class="flex items-start">
-                            <div class="w-28 flex-shrink-0 text-gray-500 font-medium">
-                                <i class="fa-solid fa-palette text-gold-600 mr-2"></i>Масти:
-                            </div>
-                            <div id="modalColors" class="font-semibold text-sand-900"></div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-28 flex-shrink-0 text-gray-500 font-medium">
-                                <i class="fa-solid fa-ruler-vertical text-gold-600 mr-2"></i>Рост в холке:
-                            </div>
-                            <div id="modalHeight" class="font-semibold text-sand-900"></div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="w-28 flex-shrink-0 text-gray-500 font-medium">
-                                <i class="fa-solid fa-bullseye text-gold-600 mr-2"></i>Назначение:
-                            </div>
-                            <div id="modalPurpose" class="font-semibold text-sand-900"></div>
-                        </div>
-                    </div>
-
-                    <!-- Description Text -->
-                    <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-amber-900 mb-2">О породе</h3>
-                        <p id="modalDescription" class="text-sand-800 text-sm leading-relaxed"></p>
-                    </div>
-                </div>
-
-                <div class="mt-6 pt-4 border-t border-sand-200 flex justify-end">
-                    <button onclick="closeModal()" class="px-5 py-2 bg-sand-200 hover:bg-sand-300 text-sand-900 rounded-lg text-sm font-medium transition">
-                        Закрыть
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal for Adding New Breed -->
-    <div id="addBreedModal" class="fixed inset-0 z-50 hidden bg-sand-900/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 relative border border-amber-900/10 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeAddBreedModal()" class="absolute top-4 right-4 text-sand-800 hover:text-amber-900 w-8 h-8 rounded-full bg-sand-100 flex items-center justify-center">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            
-            <h2 class="text-2xl font-serif font-bold text-amber-900 mb-1 flex items-center gap-2">
-                <i class="fa-solid fa-plus-circle text-gold-600"></i> Добавить новую породу
-            </h2>
-            <p class="text-xs text-gray-500 mb-5">Заполните данные о породе и загрузите её фотографию</p>
-
-            <form id="addBreedForm" onsubmit="saveNewBreed(event)" class="space-y-4 text-sm">
-                <div>
-                    <label class="block font-medium text-sand-800 mb-1">Название породы *</label>
-                    <input type="text" id="newBreedName" required placeholder="Например: Орловский рысак" class="w-full px-3 py-2 rounded-lg border border-sand-200 focus:outline-none focus:ring-2 focus:ring-gold-500">
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block font-medium text-sand-800 mb-1">Категория *</label>
-                        <select id="newBreedCategory" required class="w-full px-3 py-2 rounded-lg border border-sand-200 focus:outline-none focus:ring-2 focus:ring-gold-500 bg-white">
-                            <option value="Верховая">Верховая</option>
-                            <option value="Упряжная">Упряжная</option>
-                            <option value="Универсал">Универсал</option>
-                            <option value="Пони">Пони</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-medium text-sand-800 mb-1">Страна происхождения</label>
-                        <input type="text" id="newBreedOrigin" placeholder="Например: Россия" class="w-full px-3 py-2 rounded-lg border border-sand-200 focus:outline-none focus:ring-2 focus:ring-gold-500">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block font-medium text-sand-800 mb-1">Рост в холке (см)</label>
-                        <input type="text" id="newBreedHeight" placeholder="Например: 155–165 см" class="w-full px-3 py-2 rounded-lg border border-sand-200 focus:outline-none focus:ring-2 focus:ring-gold-500">
-                    </div>
-                    <div>
-                        <label class="block font-medium text-sand-800 mb-1">Назначение</label>
-                        <input type="text" id="newBreedPurpose" placeholder="Например: Конкур, выездка" class="w-full px-3 py-2 rounded-lg border border-sand-200 focus:outline-none focus:ring-2 focus:ring-gold-500">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block font-medium text-sand-800 mb-1">Масти</label>
-                    <input type="text" id="newBreedColors" placeholder="Например: Гнедая, вороная, серая" class="w-full px-3 py-2 rounded-lg border border-sand-200 focus:outline-none focus:ring-2 focus:ring-gold-500">
-                </div>
-
-                <!-- Image Upload Selection -->
-                <div>
-                    <label class="block font-medium text-sand-800 mb-1">Фотография породы *</label>
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-2">
-                            <label class="flex-grow cursor-pointer flex items-center justify-center gap-2 px-4 py-2 border-2 border-dashed border-amber-800/30 rounded-lg hover:bg-sand-50 transition text-amber-900 font-medium">
-                                <i class="fa-solid fa-cloud-arrow-up text-gold-600 text-lg"></i>
-                                <span id="fileNameDisplay">Выбрать файл с устройства...</span>
-                                <input type="file" id="newBreedFileInput" accept="image/*" class="hidden" onchange="handleNewBreedFileSelect(event)">
-                            </label>
-                        </div>
-                        <div class="text-center text-xs text-gray-400 font-semibold uppercase">или указать URL</div>
-                        <input type="url" id="newBreedImageUrl" placeholder="https://example.com/horse.jpg" class="w-full px-3 py-2 rounded-lg border border-sand-200 focus:outline-none focus:ring-2 focus:ring-gold-500 text-xs">
-                    </div>
-                    <!-- Image Preview -->
-                    <div id="imagePreviewContainer" class="mt-3 hidden">
-                        <p class="text-xs text-gray-500 mb-1">Предпросмотр:</p>
-                        <img id="imagePreview" src="" alt="Preview" class="w-full h-36 object-cover rounded-lg border border-sand-200">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block font-medium text-sand-800 mb-1">Коротко о породе</label>
-                    <textarea id="newBreedDescription" rows="3" placeholder="История, особенности характера..." class="w-full px-3 py-2 rounded-lg border border-sand-200 focus:outline-none focus:ring-2 focus:ring-gold-500"></textarea>
-                </div>
-
-                <div class="pt-3 flex justify-end gap-3 border-t border-sand-200">
-                    <button type="button" onclick="closeAddBreedModal()" class="px-4 py-2 bg-sand-200 hover:bg-sand-300 text-sand-900 rounded-lg font-medium transition">Отмена</button>
-                    <button type="submit" class="px-5 py-2 bg-gradient-to-r from-amber-800 to-amber-900 text-white rounded-lg font-semibold hover:from-amber-900 hover:to-amber-950 shadow-md transition">Сохранить породу</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- JavaScript Data & Logic -->
     <script>
-        const initialBreedsData = [
+        const horses = [
             {
                 id: 'akhalteke',
                 name: 'Ахалтекинская',
-                altName: 'Akhal-Teke',
-                category: 'Верховая',
-                origin: 'Туркменистан',
-                height: '155–160 см',
-                heightMin: 155,
-                colors: 'Гнедая, буланая, соловая, вороная, серая (металлический блеск)',
-                purpose: 'Верховая, спортивная, пробеги',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Akhal-Teke_horse.jpg/800px-Akhal-Teke_horse.jpg',
-                description: 'Одна из древнейших чистокровных пород лошадей. Выведена более 5000 лет назад на территории современного Туркменистана. Отличается невероятной выносливостью, изящным тонким строением и утончённым сухим телосложением. Шерсть обладает уникальным металлическим золотистым или серебристым отливом.'
+                type: 'верховая',
+                height: '155 - 163 см',
+                colors: 'Буланая, соловая, изабелловая, вороная, серая',
+                country: 'Туркменистан',
+                image: 'images/akhalteke.jpg',
+                description: 'Одна из древнейших чистокровных пород лошадей. Известна уникальным металлическим блеском шерсти, поджарым экстерьером, высокой выносливостью и пылким темпераментом.'
             },
             {
-                id: 'orlov-trotter',
+                id: 'orlov',
                 name: 'Орловский рысак',
-                altName: 'Orlov Trotter',
-                category: 'Универсал',
-                origin: 'Россия',
-                height: '157–170 см',
-                heightMin: 157,
-                colors: 'Серая (в яблоках), вороная, гнедая, чалая',
-                purpose: 'Упряжная, рысистые бега, драйвинг, верховая',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Orlov_Trotter_in_harness.jpg/800px-Orlov_Trotter_in_harness.jpg',
-                description: 'Знаменитая российская порода, выведенная графом А.Г. Орловым в конце XVIII века. Славится гармоничным телосложением, красивой лебединой шеей и высокой способностью к резвой устойчивой рыси. Является гордостью отечественного коневодства.'
+                type: 'упряжная',
+                height: '157 - 170 см',
+                colors: 'Серая в яблоках, вороная, гнедая, светло-серая',
+                country: 'Россия',
+                image: 'images/orlov.jpg',
+                description: 'Знаменитая русская порода с гармоничным сложением и устойчивой рысью. Отличается грациозной лебединой шеей, гордой осанкой и универсальностью в использовании.'
             },
             {
                 id: 'friesian',
                 name: 'Фризская',
-                altName: 'Friesian',
-                category: 'Упряжная',
-                origin: 'Нидерланды',
-                height: '158–165 см',
-                heightMin: 158,
+                type: 'универсал',
+                height: '158 - 165 см',
                 colors: 'Исключительно вороная (черная)',
-                purpose: 'Каретная, драйвинг, выездка, шоу',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Friesian_stallion.jpg/800px-Friesian_stallion.jpg',
-                description: 'Старинная голландская порода, часто называемая «черными жемчужинами». Отличается мощным, но элегантным строением, пышной гривой, хвостом и густыми щетками (фризами) на ногах. Обладают высоким эффектным выносом ног на шагу и рыси.'
+                country: 'Нидерланды',
+                image: 'images/friesian.jpg',
+                description: '«Черные жемчужины» Фрисландии. Обладают невероятно пышной гривой и хвостом, длинными фризами на ногах и высоким, каретным ходом.'
             },
             {
                 id: 'arabian',
                 name: 'Арабская чистокровная',
-                altName: 'Arabian',
-                category: 'Верховая',
-                origin: 'Аравийский п-ов',
-                height: '147–155 см',
-                heightMin: 147,
+                type: 'верховая',
+                height: '145 - 155 см',
                 colors: 'Серая, гнедая, рыжая, вороная',
-                purpose: 'Верховая, пробеги, улучшатель пород',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Arabian_Horse_in_gallop.jpg/800px-Arabian_Horse_in_gallop.jpg',
-                description: 'Легендарная порода, повлиявшая на большинство современных верховых пород мира. Отличается вогнутым «щучьим» профилем головы, большими выразительными глазами, высоко поднятым хвостом при движении и потрясающей выносливостью на дальние дистанции.'
+                country: 'Аравийский п-ов',
+                image: 'images/arabian.jpg',
+                description: 'Древнейшая порода с узнаваемым «вогнутым» профилем головы, крупными глазами и высоко поднятым хвостом при движении. Обладает рекордной выносливостью.'
             },
             {
                 id: 'shire',
                 name: 'Шайр',
-                altName: 'Shire',
-                category: 'Упряжная',
-                origin: 'Великобритания',
-                height: '165–185 см',
-                heightMin: 165,
-                colors: 'Вороная, гнедая, серая, караковая',
-                purpose: 'Тяжелоупряжная, хозяйственная, парадная',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Shire_horse_standing.jpg/800px-Shire_horse_standing.jpg',
-                description: 'Самая крупная и массивная порода лошадей на планете. Шайры известны своим гигантским ростом, невероятной физической силой и одновременно спокойным, добряковским характером. На ногах развиты пышные белые фризы.'
+                type: 'упряжная',
+                height: '165 - 185 см',
+                colors: 'Вороная, гнедая, серая',
+                country: 'Великобритания',
+                image: 'images/shire.jpg',
+                description: 'Самая крупная тяжелоупряжная порода лошадей в мире. Отличается невероятной физической силой, спокойным доброжелательным нравом и густыми фризами.'
             },
             {
                 id: 'andalusian',
-                name: 'Андалузская (P.R.E.)',
-                altName: 'Pura Raza Española',
-                category: 'Верховая',
-                origin: 'Испания',
-                height: '155–165 см',
-                heightMin: 155,
-                colors: 'Преимущественно серая, гнедая, вороная',
-                purpose: 'Выездка, классическая верховая езда, коррида',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Andalusian_horse_trotting.jpg/800px-Andalusian_horse_trotting.jpg',
-                description: 'Королевская порода Пиренейского полуострова. Обладает гордым осанистым видом, высокой шеей, округлыми формами и пышной волнистой гривой. Андалузцы великолепно сбалансированы и природно склонны к высшей школе верховой езды.'
+                name: 'Андалузская (PRE)',
+                type: 'верховая',
+                height: '155 - 162 см',
+                colors: 'Преимущественно серая, гнедая',
+                country: 'Испания',
+                image: 'images/andalusian.jpg',
+                description: 'Благородная порода Испании. Идеально подходит для классической выездки и высшей школы верховой езды благодаря природному балансу и мощной шее.'
             },
             {
                 id: 'thoroughbred',
                 name: 'Чистокровная верховая',
-                altName: 'Thoroughbred',
-                category: 'Верховая',
-                origin: 'Великобритания',
-                height: '160–173 см',
-                heightMin: 160,
-                colors: 'Гнедая, рыжая, вороная, караковая, серая',
-                purpose: 'Скачки, конкур, троеборье',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Thoroughbred_racing_horse.jpg/800px-Thoroughbred_racing_horse.jpg',
-                description: 'Самая быстрая порода лошадей в мире, способная развивать скорость свыше 60 км/ч. Выведена в XVII-XVIII вв. исключительно для скачек. Имеет сухую конституцию, развитую мускулатуру и горячий, пылкий темперамент.'
+                type: 'верховая',
+                height: '160 - 173 см',
+                colors: 'Гнедая, рыжая, вороная, серая',
+                country: 'Великобритания',
+                image: 'images/thoroughbred.jpg',
+                description: 'Самая быстрая порода лошадей в мире, способная развивать скорость свыше 60 км/ч. Создана специально для ипподромных скачек.'
             },
             {
-                id: 'quarter-horse',
-                name: 'Американский квотерхорс',
-                altName: 'American Quarter Horse',
-                category: 'Универсал',
-                origin: 'США',
-                height: '142–160 см',
-                heightMin: 142,
-                colors: 'Рыжая (сорель), гнедая, буланая, пегая, чалая',
-                purpose: 'Вестерн, работа с скотом, короткие спринты',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/American_Quarter_Horse_Sorrel.jpg/800px-American_Quarter_Horse_Sorrel.jpg',
-                description: 'Самая популярная порода в Северной Америке. Названа так благодаря способности развивать молниеносную скорость на коротких дистанциях (в четверть мили). Обладает невероятным «чувством коров», взрывной реакцией и маневренностью.'
+                id: 'quarter',
+                name: 'Квотерхорс',
+                type: 'универсал',
+                height: '142 - 160 см',
+                colors: 'Рыжая, гнедая, буланая, чалая',
+                country: 'США',
+                image: 'images/quarter.jpg',
+                description: 'Легендарная американская порода. Славится молниеносным стартовым рывком на коротких дистанциях, мускулистым крупом и работы с скотом (вестерн).'
             },
             {
                 id: 'appaloosa',
                 name: 'Аппалуза',
-                altName: 'Appaloosa',
-                category: 'Универсал',
-                origin: 'США',
-                height: '142–155 см',
-                heightMin: 142,
-                colors: 'Чубарая (пятнистые узоры), мраморная',
-                purpose: 'Вестерн, прогулки, любительский спорт',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Appaloosa_leopard_complex.jpg/800px-Appaloosa_leopard_complex.jpg',
-                description: 'Порода, выведенная индейским племенем нез-персе. Отличается характерной пятнистой мастью (чубаростью), пятнистой кожей, белой склерой глаза и полосатыми копытами. Очень выносливы и дружелюбны.'
+                type: 'верховая',
+                height: '142 - 155 см',
+                colors: 'Чубарая (пятнистая), мраморная',
+                country: 'США',
+                image: 'images/appaloosa.jpg',
+                description: 'Выведена индейцами племени не-персе. Известна яркими пятнистыми узорами на шерсти, крапчатой кожей вокруг глаз и полосатыми копытами.'
             },
             {
                 id: 'trakehner',
                 name: 'Тракененская',
-                altName: 'Trakehner',
-                category: 'Верховая',
-                origin: 'Германия',
-                height: '160–170 см',
-                heightMin: 160,
+                type: 'верховая',
+                height: '160 - 170 см',
                 colors: 'Гнедая, вороная, рыжая, серая',
-                purpose: 'Конкур, выездка, троеборье',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Trakehner_stallion_at_trot.jpg/800px-Trakehner_stallion_at_trot.jpg',
-                description: 'Элитная спортивная порода, выведенная в XVIII веке в Восточной Пруссии (Тракенене). Единственная из немецких полукровных пород, разводимая в чистоте без прилития сторонней крови, кроме арабской и чистокровной верховой.'
+                country: 'Германия',
+                image: 'images/trakehner.jpg',
+                description: 'Элитная спортивная порода верховых лошадей. Блестяще выступает в конкуре, выездке и троеборье благодаря пластичным движениям.'
             },
             {
                 id: 'don',
                 name: 'Донская',
-                altName: 'Don Horse',
-                category: 'Универсал',
-                origin: 'Россия',
-                height: '160–165 см',
-                heightMin: 160,
-                colors: 'Преимущественно рыжая и бурая с золотистым оттенком',
-                purpose: 'Верховая, кавалерия, пробеги, туризм',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Don_breed_horse_golden.jpg/800px-Don_breed_horse_golden.jpg',
-                description: 'Отечественная степная порода, созданная донскими казаками. Лошади отличаются неприхотливостью, крепостью здоровья, выносливостью и характерным «золотым» блеском рыжей шерсти.'
+                type: 'универсал',
+                height: '160 - 165 см',
+                colors: 'Рыжая и бурая с золотистым отливом',
+                country: 'Россия',
+                image: 'images/don.jpg',
+                description: 'Отечественная казачья порода степных лошадей. Отличается неприхотливостью, крепким здоровьем и характерным золотистым блеском шерсти.'
             },
             {
-                id: 'vladimir-heavy-draft',
+                id: 'vladimir',
                 name: 'Владимирский тяжеловоз',
-                altName: 'Vladimir Heavy Draft',
-                category: 'Упряжная',
-                origin: 'Россия',
-                height: '160–168 см',
-                heightMin: 160,
-                colors: 'Гнедая, гнедо-чалая, вороная, рыжая',
-                purpose: 'Тяжелоупряжная, перевозка грузов, тройки',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Vladimir_Draft_Horse_standing.jpg/800px-Vladimir_Draft_Horse_standing.jpg',
-                description: 'Выведена в середине XX века во Владимирской и Ивановской областях. Крупная, рельефная лошадь с энергичным темпераментом и широким размашистым шагом. Обладает высокой грузоподъемностью и добрым нравом.'
+                type: 'упряжная',
+                height: '165 - 170 см',
+                colors: 'Гнедая, караковая, вороная',
+                country: 'Россия',
+                image: 'images/vladimir.jpg',
+                description: 'Крупная тяжелоупряжная порода, выведенная в XX веке. Сочетает высокую грузоподъемность с размашистым и быстрым шагом.'
             },
             {
-                id: 'shetland-pony',
+                id: 'shetland',
                 name: 'Шетлендский пони',
-                altName: 'Shetland Pony',
-                category: 'Пони',
-                origin: 'Шотландия',
-                height: '80–107 см',
-                heightMin: 80,
-                colors: 'Все масти, включая пегую',
-                purpose: 'Детский верховой спорт, катание детей, драйвинг',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Shetland_Pony_on_pasture.jpg/800px-Shetland_Pony_on_pasture.jpg',
-                description: 'Одна из самых маленьких пород пони в мире. Несмотря на малый рост, обладает невероятной физической силой относительно своего веса. Имеет толстую густую шерсть, пышную гриву и смекалистый ум.'
+                type: 'пони',
+                height: '75 - 107 см',
+                colors: 'Все масти',
+                country: 'Шотландия',
+                image: 'images/shetland.jpg',
+                description: 'Одна из самых маленьких и сильных пород пони относительно своего веса. Обладает густым пышным мехом и спокойным темпераментом.'
             },
             {
                 id: 'mustang',
                 name: 'Мустанг',
-                altName: 'Mustang',
-                category: 'Верховая',
-                origin: 'США',
-                height: '140–150 см',
-                heightMin: 140,
-                colors: 'Любые масти',
-                purpose: 'Дикие табуны, адаптивная верховая езда',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Wild_Mustang_stallion.jpg/800px-Wild_Mustang_stallion.jpg',
-                description: 'Одичавшие лошади Североамериканского континента, потомки испанских лошадей, завезённых конкистадорами. Символ американского Дикого Запада. Отличаются стальным иммунитетом, сообразительностью и обостренным инстинктом самосохранения.'
+                type: 'верховая',
+                height: '140 - 150 см',
+                colors: 'Гнедая, рыжая, саврасая, пегая',
+                country: 'США',
+                image: 'images/mustang.jpg',
+                description: 'Очаровательные одичавшие лошади североамериканских прерий. Обладают стальным иммунитетом, быстрым умом и невероятной выносливостью.'
             },
             {
                 id: 'hannoverian',
                 name: 'Ганноверская',
-                altName: 'Hanoverian',
-                category: 'Верховая',
-                origin: 'Германия',
-                height: '163–175 см',
-                heightMin: 163,
+                type: 'верховая',
+                height: '160 - 175 см',
                 colors: 'Гнедая, вороная, рыжая, серая',
-                purpose: 'Спортивная (выездка, конкур, троеборье)',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Hanoverian_horse_showjumping.jpg/800px-Hanoverian_horse_showjumping.jpg',
-                description: 'Самая успешная спортивная порода полукровных лошадей в мире. Регулярно лидирует в мировых рейтингах по выездке и конкуру. Отличается идеальным экстерьером, импульсом движения и послушным нравом.'
+                country: 'Германия',
+                image: 'images/hannoverian.jpg',
+                description: 'Самая успешная спортивная порода полукровок в мире. Занимает лидирующие позиции в мировых рейтингах по выездке и конкуру.'
             }
         ];
 
-        let breedsData = [];
         let currentCategory = 'all';
-        let currentEditingBreedId = null;
-        let uploadedBase64Image = null;
 
-        function loadBreedsData() {
-            const saved = localStorage.getItem('horse_breeds_data');
-            if (saved) {
-                try {
-                    breedsData = JSON.parse(saved);
-                } catch(e) {
-                    breedsData = [...initialBreedsData];
-                }
-            } else {
-                breedsData = [...initialBreedsData];
-            }
-        }
+        function renderCards() {
+            const grid = document.getElementById('grid');
+            const notFound = document.getElementById('notFound');
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
 
-        function saveBreedsDataToStorage() {
-            try {
-                localStorage.setItem('horse_breeds_data', JSON.stringify(breedsData));
-            } catch (e) {
-                console.warn('LocalStorage limit reached', e);
-            }
-        }
+            const filtered = horses.filter(h => {
+                const matchCat = currentCategory === 'all' || h.type === currentCategory;
+                const matchSearch = h.name.toLowerCase().includes(search) || 
+                                    h.colors.toLowerCase().includes(search) ||
+                                    h.country.toLowerCase().includes(search) ||
+                                    h.type.toLowerCase().includes(search);
+                return matchCat && matchSearch;
+            });
 
-        function resetToDefaultBreeds() {
-            if (confirm('Сбросить все породы и фотографии к исходным?')) {
-                localStorage.removeItem('horse_breeds_data');
-                breedsData = JSON.parse(JSON.stringify(initialBreedsData));
-                updateCounts();
-                filterBreeds();
-            }
-        }
-
-        function getSvgFallback(breedName) {
-            const svgStr = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400" fill="none">
-                <rect width="600" height="400" fill="#431c07"/>
-                <circle cx="300" cy="180" r="110" fill="#d97706" opacity="0.15"/>
-                <path d="M260 250 C260 210 280 180 300 140 C310 120 315 90 300 70 C330 80 350 110 345 140 C340 165 320 190 310 220 L340 250 Z" fill="#fbbf24"/>
-                <text x="300" y="320" fill="#f4efe6" font-family="Georgia, serif" font-size="24" font-weight="bold" text-anchor="middle">${breedName}</text>
-                <text x="300" y="350" fill="#d97706" font-family="sans-serif" font-size="14" text-anchor="middle">Иллюстрация породы</text>
-            </svg>`.trim();
-            return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
-        }
-
-        function renderBreeds(breeds) {
-            const grid = document.getElementById('breedGrid');
-            const noResults = document.getElementById('noResults');
-            const countElem = document.getElementById('visibleCount');
-
-            grid.innerHTML = '';
-            countElem.innerText = breeds.length;
-
-            if (breeds.length === 0) {
-                grid.classList.add('hidden');
-                noResults.classList.remove('hidden');
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                notFound.classList.remove('hidden');
                 return;
             }
 
-            grid.classList.remove('hidden');
-            noResults.classList.add('hidden');
-
-            breeds.forEach(breed => {
-                const card = document.createElement('div');
-                card.className = 'glass-card rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-sand-200 transition-all duration-300 transform hover:-translate-y-1 flex flex-col cursor-pointer group relative';
-                
-                let badgeColor = 'bg-amber-100 text-amber-800';
-                if (breed.category === 'Верховая') badgeColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
-                if (breed.category === 'Упряжная') badgeColor = 'bg-blue-100 text-blue-800 border-blue-200';
-                if (breed.category === 'Универсал') badgeColor = 'bg-amber-100 text-amber-800 border-amber-200';
-                if (breed.category === 'Пони') badgeColor = 'bg-purple-100 text-purple-800 border-purple-200';
-
-                const fallbackUrl = getSvgFallback(breed.name);
-
-                card.innerHTML = `
-                    <div class="relative h-48 overflow-hidden bg-amber-950" onclick="openModal('${breed.id}')">
-                        <img 
-                            src="${breed.image}" 
-                            alt="${breed.name}" 
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            loading="lazy"
-                            onerror="this.onerror=null; this.src='${fallbackUrl}';"
-                        >
-                        <button 
-                            onclick="event.stopPropagation(); triggerCardImageUpload('${breed.id}')"
-                            title="Сменить фото породы" 
-                            class="absolute top-3 left-3 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center transition shadow-lg z-10 opacity-90 hover:scale-110">
-                            <i class="fa-solid fa-camera text-xs"></i>
-                        </button>
-
-                        <div class="absolute top-3 right-3">
-                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold border ${badgeColor} shadow-sm backdrop-blur-md">
-                                ${breed.category}
-                            </span>
-                        </div>
+            notFound.classList.add('hidden');
+            grid.innerHTML = filtered.map(h => `
+                <div onclick="openModal('${h.id}')" class="bg-stone-900 border border-stone-800/80 rounded-2xl overflow-hidden shadow-xl hover:border-amber-600/50 hover:shadow-amber-900/10 transition duration-300 cursor-pointer flex flex-col group">
+                    <div class="relative h-60 bg-stone-950 overflow-hidden">
+                        <img src="${h.image}" alt="${h.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
+                            onerror="this.onerror=null; this.src='https://placehold.co/600x400/1c1917/d97706?text=Добавьте+${h.id}.jpg'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-stone-900 via-transparent to-transparent opacity-80"></div>
+                        <span class="absolute top-3 right-3 bg-stone-950/80 backdrop-blur-sm text-amber-400 text-[11px] px-3 py-1 rounded-full border border-amber-900/40 uppercase tracking-wider font-semibold">
+                            ${h.type}
+                        </span>
                     </div>
-                    <div class="p-5 flex-grow flex flex-col justify-between" onclick="openModal('${breed.id}')">
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
                         <div>
-                            <div class="flex justify-between items-start mb-1">
-                                <h3 class="text-xl font-serif font-bold text-sand-900 group-hover:text-amber-800 transition">${breed.name}</h3>
+                            <div class="flex items-baseline justify-between gap-2 mb-1">
+                                <h3 class="text-2xl font-bold text-amber-100 group-hover:text-amber-400 transition">${h.name}</h3>
                             </div>
-                            <p class="text-xs text-gray-500 mb-3 italic">${breed.altName || ''} ${breed.origin ? '• ' + breed.origin : ''}</p>
+                            <p class="text-xs text-stone-400 mb-3 flex items-center gap-1.5">
+                                <i class="fa-solid fa-earth-americas text-amber-600/80"></i>${h.country}
+                            </p>
                             
-                            <div class="space-y-1.5 text-xs text-sand-800 mb-4">
-                                <p class="flex items-center"><i class="fa-solid fa-ruler-vertical w-4 text-gold-600"></i> <span class="font-medium mr-1">Рост:</span> ${breed.height || 'не указан'}</p>
-                                <p class="flex items-center truncate"><i class="fa-solid fa-palette w-4 text-gold-600"></i> <span class="font-medium mr-1">Масти:</span> ${breed.colors || 'не указаны'}</p>
+                            <div class="space-y-1.5 text-xs text-stone-300">
+                                <p><span class="text-stone-500 font-medium">Рост в холке:</span> <strong class="text-amber-200">${h.height}</strong></p>
+                                <p class="line-clamp-1"><span class="text-stone-500 font-medium">Масти:</span> ${h.colors}</p>
                             </div>
                         </div>
 
-                        <div class="pt-3 border-t border-sand-100 flex items-center justify-between text-xs font-medium text-amber-800 group-hover:text-gold-600">
-                            <span>Подробнее о породе</span>
-                            <i class="fa-solid fa-chevron-right transform group-hover:translate-x-1 transition"></i>
+                        <div class="pt-3 border-t border-stone-800/60 flex items-center justify-between text-xs font-semibold text-amber-500 group-hover:text-amber-400">
+                            <span>Подробная информация</span>
+                            <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition"></i>
                         </div>
                     </div>
-                `;
-                grid.appendChild(card);
-            });
+                </div>
+            `).join('');
         }
 
-        function triggerCardImageUpload(breedId) {
-            currentEditingBreedId = breedId;
-            document.getElementById('cardImageInput').click();
-        }
+        function openModal(id) {
+            const h = horses.find(item => item.id === id);
+            if (!h) return;
 
-        function handleCardImageUpload(event) {
-            const file = event.target.files[0];
-            if (!file || !currentEditingBreedId) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const base64Data = e.target.result;
-                const breed = breedsData.find(b => b.id === currentEditingBreedId);
-                if (breed) {
-                    breed.image = base64Data;
-                    saveBreedsDataToStorage();
-                    filterBreeds();
-                }
-            };
-            reader.readAsDataURL(file);
-            event.target.value = '';
-        }
-
-        function openAddBreedModal() {
-            document.getElementById('addBreedModal').classList.remove('hidden');
-            document.body.classList.add('modal-active');
-        }
-
-        function closeAddBreedModal() {
-            document.getElementById('addBreedModal').classList.add('hidden');
-            document.body.classList.remove('modal-active');
-            document.getElementById('addBreedForm').reset();
-            document.getElementById('imagePreviewContainer').classList.add('hidden');
-            document.getElementById('fileNameDisplay').innerText = 'Выбрать файл с устройства...';
-            uploadedBase64Image = null;
-        }
-
-        function handleNewBreedFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            document.getElementById('fileNameDisplay').innerText = file.name;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedBase64Image = e.target.result;
-                document.getElementById('imagePreview').src = uploadedBase64Image;
-                document.getElementById('imagePreviewContainer').classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function saveNewBreed(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById('newBreedName').value.trim();
-            const category = document.getElementById('newBreedCategory').value;
-            const origin = document.getElementById('newBreedOrigin').value.trim() || 'Не указана';
-            const height = document.getElementById('newBreedHeight').value.trim() || 'Не указан';
-            const purpose = document.getElementById('newBreedPurpose').value.trim() || 'Не указано';
-            const colors = document.getElementById('newBreedColors').value.trim() || 'Различные';
-            const description = document.getElementById('newBreedDescription').value.trim() || 'Описание породы пока не добавлено.';
-            const urlInput = document.getElementById('newBreedImageUrl').value.trim();
-
-            let finalImage = uploadedBase64Image || urlInput;
-            if (!finalImage) {
-                finalImage = getSvgFallback(name);
-            }
-
-            const heightMatch = height.match(/\d+/);
-            const heightMin = heightMatch ? parseInt(heightMatch[0]) : 150;
-
-            const newBreed = {
-                id: 'custom-' + Date.now(),
-                name: name,
-                altName: name,
-                category: category,
-                origin: origin,
-                height: height,
-                heightMin: heightMin,
-                colors: colors,
-                purpose: purpose,
-                image: finalImage,
-                description: description
-            };
-
-            breedsData.unshift(newBreed);
-            saveBreedsDataToStorage();
-            updateCounts();
-            filterBreeds();
-            closeAddBreedModal();
-        }
-
-        function filterBreeds() {
-            const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
-            const sortValue = document.getElementById('sortSelect').value;
-
-            let filtered = breedsData.filter(breed => {
-                const matchesCategory = currentCategory === 'all' || breed.category === currentCategory;
-                const matchesSearch = breed.name.toLowerCase().includes(searchQuery) || 
-                                      (breed.altName && breed.altName.toLowerCase().includes(searchQuery)) ||
-                                      (breed.origin && breed.origin.toLowerCase().includes(searchQuery)) ||
-                                      (breed.colors && breed.colors.toLowerCase().includes(searchQuery));
-
-                return matchesCategory && matchesSearch;
-            });
-
-            filtered.sort((a, b) => {
-                if (sortValue === 'name-asc') return a.name.localeCompare(b.name, 'ru');
-                if (sortValue === 'name-desc') return b.name.localeCompare(a.name, 'ru');
-                if (sortValue === 'height-asc') return (a.heightMin || 0) - (b.heightMin || 0);
-                if (sortValue === 'height-desc') return (b.heightMin || 0) - (a.heightMin || 0);
-                return 0;
-            });
-
-            renderBreeds(filtered);
-        }
-
-        function setCategory(cat) {
-            currentCategory = cat;
-            
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                if (btn.dataset.category === cat) {
-                    btn.classList.add('bg-gold-500', 'text-amber-950', 'shadow-md');
-                    btn.classList.remove('hover:bg-amber-800/50', 'text-amber-100');
-                } else {
-                    btn.classList.remove('bg-gold-500', 'text-amber-950', 'shadow-md');
-                    btn.classList.add('hover:bg-amber-800/50', 'text-amber-100');
-                }
-            });
-
-            filterBreeds();
-        }
-
-        function resetFilters() {
-            document.getElementById('searchInput').value = '';
-            setCategory('all');
-        }
-
-        function openModal(breedId) {
-            const breed = breedsData.find(b => b.id === breedId);
-            if (!breed) return;
-
-            const modalImg = document.getElementById('modalImage');
-            const fallbackUrl = getSvgFallback(breed.name);
-            modalImg.src = breed.image;
-            modalImg.onerror = function() {
-                this.onerror = null;
-                this.src = fallbackUrl;
-            };
-
-            document.getElementById('modalName').innerText = breed.name;
-            document.getElementById('modalNameMobile').innerText = breed.name;
-            document.getElementById('modalAltName').innerText = breed.altName || breed.name;
-            
-            document.getElementById('modalCategoryBadge').innerText = breed.category;
-            document.getElementById('modalCategoryBadgeMobile').innerText = breed.category;
-
-            document.getElementById('modalOriginText').innerText = breed.origin || 'Не указана';
-            document.getElementById('modalColors').innerText = breed.colors || 'Различные';
-            document.getElementById('modalHeight').innerText = breed.height || 'Не указан';
-            document.getElementById('modalPurpose').innerText = breed.purpose || 'Не указано';
-            document.getElementById('modalDescription').innerText = breed.description;
-
-            document.getElementById('detailModal').classList.remove('hidden');
-            document.body.classList.add('modal-active');
+            document.getElementById('modalContent').innerHTML = `
+                <div class="relative h-64 sm:h-72 bg-stone-950">
+                    <img src="${h.image}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/1c1917/d97706?text=Добавьте+${h.id}.jpg'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/40 to-transparent"></div>
+                    <div class="absolute bottom-5 left-6 right-6">
+                        <span class="bg-amber-600 text-stone-950 text-[11px] px-3 py-1 rounded-full uppercase tracking-wider font-bold mb-2 inline-block">${h.type}</span>
+                        <h2 class="text-3xl sm:text-4xl font-bold text-amber-100">${h.name}</h2>
+                    </div>
+                </div>
+                <div class="p-6 space-y-6">
+                    <div class="grid grid-cols-2 gap-4 bg-stone-950/60 p-4 rounded-xl border border-stone-800 text-sm">
+                        <div>
+                            <span class="text-stone-500 block text-xs mb-0.5">Рост в холке</span>
+                            <span class="text-amber-300 font-semibold text-base">${h.height}</span>
+                        </div>
+                        <div>
+                            <span class="text-stone-500 block text-xs mb-0.5">Страна происхождения</span>
+                            <span class="text-amber-300 font-semibold text-base">${h.country}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-amber-500 text-xs uppercase tracking-wider font-bold mb-2">Характерные масти</h4>
+                        <p class="text-stone-300 text-sm bg-stone-950/30 p-3 rounded-lg border border-stone-800/40">${h.colors}</p>
+                    </div>
+                    <div>
+                        <h4 class="text-amber-500 text-xs uppercase tracking-wider font-bold mb-2">О породе</h4>
+                        <p class="text-stone-300 text-sm leading-relaxed">${h.description}</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
-            document.getElementById('detailModal').classList.add('hidden');
-            document.body.classList.remove('modal-active');
+            document.getElementById('modal').classList.add('hidden');
+            document.body.style.overflow = '';
         }
 
-        document.getElementById('detailModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-        document.getElementById('addBreedModal').addEventListener('click', function(e) {
-            if (e.target === this) closeAddBreedModal();
-        });
-
-        function updateCounts() {
-            document.getElementById('count-all').innerText = breedsData.length;
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = 'cat-btn px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition bg-stone-800 text-stone-300 hover:bg-stone-700 hover:text-amber-300';
+            });
+            event.target.className = 'cat-btn px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition bg-amber-600 text-stone-950 shadow-md';
+            renderCards();
         }
 
-        window.onload = function() {
-            loadBreedsData();
-            updateCounts();
-            filterBreeds();
-        };
+        document.getElementById('searchInput').addEventListener('input', renderCards);
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) closeModal();
+        });
+
+        renderCards();
     </script>
 </body>
 </html>
